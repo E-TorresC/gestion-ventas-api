@@ -1,5 +1,6 @@
 package etctech.gestionventas.controller;
 
+import etctech.gestionventas.dto.request.ClienteFiltroDTO;
 import etctech.gestionventas.dto.request.ClienteRequestDTO;
 import etctech.gestionventas.dto.response.ClienteResponseDTO;
 import etctech.gestionventas.service.ClienteService;
@@ -73,6 +74,25 @@ public class ClienteController {
             @RequestParam(required = false) String search,
             @PageableDefault(size = 10, sort = "apellidos", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<ClienteResponseDTO> page = clienteService.buscarClientes(search, pageable);
+        return ResponseEntity.ok(page);
+    }
+
+    @PostMapping("/buscar-avanzada")
+    public ResponseEntity<Page<ClienteResponseDTO>> buscarClientesAvanzado(
+            @RequestBody(required = false) ClienteFiltroDTO filtro,
+            @PageableDefault(
+                    size = 10,
+                    sort = "apellidos",
+                    direction = Sort.Direction.ASC
+            ) Pageable pageable) {
+
+        if (filtro == null) {
+            filtro = new ClienteFiltroDTO();
+        }
+
+        Page<ClienteResponseDTO> page =
+                clienteService.buscarClientesAvanzado(filtro, pageable);
+
         return ResponseEntity.ok(page);
     }
 

@@ -1,5 +1,6 @@
 package etctech.gestionventas.service;
 
+import etctech.gestionventas.dto.request.ClienteFiltroDTO;
 import etctech.gestionventas.dto.request.ClienteRequestDTO;
 import etctech.gestionventas.dto.response.ClienteResponseDTO;
 import org.springframework.data.domain.Page;
@@ -22,5 +23,10 @@ public interface ClienteService {
     boolean existeClienteActivo(Long id);
 
     Page<ClienteResponseDTO> listarClientesTopCompras(Pageable pageable);
+
+    Page<ClienteResponseDTO> buscarClientesAvanzado(
+            ClienteFiltroDTO filtro,
+            Pageable pageable
+    );
 
 }

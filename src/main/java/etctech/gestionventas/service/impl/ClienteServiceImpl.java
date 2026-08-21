@@ -1,5 +1,6 @@
 package etctech.gestionventas.service.impl;
 
+import etctech.gestionventas.dto.request.ClienteFiltroDTO;
 import etctech.gestionventas.dto.request.ClienteRequestDTO;
 import etctech.gestionventas.dto.response.ClienteResponseDTO;
 import etctech.gestionventas.entity.Cliente;
@@ -7,10 +8,12 @@ import etctech.gestionventas.exception.BusinessException;
 import etctech.gestionventas.exception.ResourceNotFoundException;
 import etctech.gestionventas.repository.ClienteRepository;
 import etctech.gestionventas.service.ClienteService;
+import etctech.gestionventas.specification.ClienteSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -141,6 +144,18 @@ public class ClienteServiceImpl implements ClienteService {
         log.info("Listando clientes con mayor monto de compras");
 
         return clienteRepository.findClientesByMontoTotalCompras(pageable)
+                .map(this::mapToResponseDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ClienteResponseDTO> buscarClientesAvanzado(ClienteFiltroDTO filtro, Pageable pageable) {
+        log.info("Buscando clientes con filtros avanzados: {}", filtro);
+
+        Specification<Cliente> specification =
+                ClienteSpecification.filtrarClientes(filtro);
+
+        return clienteRepository.findAll(specification, pageable)
                 .map(this::mapToResponseDTO);
     }
 
